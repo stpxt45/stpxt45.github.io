@@ -1,1 +1,9 @@
-
+---
+title: Test post  
+layout: default
+date:: 2026-02-13
+keywords: something
+published: true
+mathjax: yes
+---
+Test test
