@@ -1,0 +1,38 @@
+---
+title: json formatter
+layout: simple
+page_id: trinkets
+---
+
+<p><a href='/trinkets'>&larr; Back to Trinkets</a></p>
+
+<textarea id="input" rows="12" style="width: 100%; font-family: monospace; font-size: 14px; padding: 8px; box-sizing: border-box;" placeholder="Paste JSON here..."></textarea>
+
+<p>
+    <button id="format-btn" style="font-size: 14px; padding: 6px 16px; cursor: pointer;">Format</button>
+</p>
+
+<pre id="output" style="background: #f5f5f5; padding: 12px; overflow-x: auto; display: none;"></pre>
+<p id="error" style="color: red; display: none;"></p>
+
+<script>
+    var input = document.getElementById('input');
+    var output = document.getElementById('output');
+    var error = document.getElementById('error');
+    var btn = document.getElementById('format-btn');
+
+    btn.addEventListener('click', function () {
+        output.style.display = 'none';
+        error.style.display = 'none';
+        var text = input.value.trim();
+        if (text === '') return;
+        try {
+            var parsed = JSON.parse(text);
+            output.textContent = JSON.stringify(parsed, null, 2);
+            output.style.display = 'block';
+        } catch (e) {
+            error.textContent = 'Invalid JSON: ' + e.message;
+            error.style.display = 'block';
+        }
+    });
+</script>

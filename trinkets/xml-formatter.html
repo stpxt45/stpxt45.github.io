@@ -1,0 +1,93 @@
+---
+title: xml/html formatter
+layout: simple
+page_id: trinkets
+---
+
+<p><a href='/trinkets'>&larr; Back to Trinkets</a></p>
+
+<textarea id="input" rows="12" style="width: 100%; font-family: monospace; font-size: 14px; padding: 8px; box-sizing: border-box;" placeholder="Paste XML or HTML here..."></textarea>
+
+<p>
+    <button id="format-btn" style="font-size: 14px; padding: 6px 16px; cursor: pointer;">Format</button>
+</p>
+
+<pre id="output" style="background: #f5f5f5; padding: 12px; overflow-x: auto; display: none;"></pre>
+<p id="error" style="color: red; display: none;"></p>
+
+<script>
+    var input = document.getElementById('input');
+    var output = document.getElementById('output');
+    var error = document.getElementById('error');
+    var btn = document.getElementById('format-btn');
+
+    btn.addEventListener('click', function () {
+        output.style.display = 'none';
+        error.style.display = 'none';
+        var text = input.value.trim();
+        if (text === '') return;
+
+        try {
+            var formatted = formatXml(text);
+            output.textContent = formatted;
+            output.style.display = 'block';
+        } catch (e) {
+            error.textContent = 'Error: ' + e.message;
+            error.style.display = 'block';
+        }
+    });
+
+    function formatXml(xml) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(xml, 'application/xml');
+        var parseError = doc.querySelector('parsererror');
+        if (parseError) {
+            // Try as HTML instead
+            doc = parser.parseFromString(xml, 'text/html');
+            return indent(doc.documentElement, 0);
+        }
+        return indent(doc.documentElement, 0);
+    }
+
+    function indent(node, level) {
+        if (node.nodeType === 3) {
+            var text = node.textContent.trim();
+            return text ? text : '';
+        }
+        if (node.nodeType !== 1) return '';
+
+        var pad = repeat('  ', level);
+        var tag = node.tagName.toLowerCase();
+        var attrs = '';
+        for (var i = 0; i < node.attributes.length; i++) {
+            var a = node.attributes[i];
+            attrs += ' ' + a.name + '="' + escapeAttr(a.value) + '"';
+        }
+
+        var children = [];
+        for (var j = 0; j < node.childNodes.length; j++) {
+            var result = indent(node.childNodes[j], level + 1);
+            if (result !== '') children.push(result);
+        }
+
+        if (children.length === 0) {
+            return pad + '<' + tag + attrs + ' />';
+        }
+
+        if (children.length === 1 && node.childNodes.length === 1 && node.childNodes[0].nodeType === 3) {
+            return pad + '<' + tag + attrs + '>' + children[0] + '</' + tag + '>';
+        }
+
+        return pad + '<' + tag + attrs + '>\n' + children.join('\n') + '\n' + pad + '</' + tag + '>';
+    }
+
+    function escapeAttr(s) {
+        return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function repeat(s, n) {
+        var r = '';
+        for (var i = 0; i < n; i++) r += s;
+        return r;
+    }
+</script>

@@ -1,0 +1,128 @@
+---
+title: epoch converter
+layout: simple
+page_id: trinkets
+---
+
+<p><a href='/trinkets'>&larr; Back to Trinkets</a></p>
+
+<h3>Current Epoch Time</h3>
+<p style="font-family: monospace; font-size: 24px;" id="live-epoch"></p>
+
+<h3>Epoch &rarr; Human Date</h3>
+<p>
+    <input id="epoch-input" type="text" style="font-family: monospace; font-size: 14px; padding: 6px; width: 260px;" placeholder="e.g. 1700000000">
+    <button id="epoch-btn" style="font-size: 14px; padding: 6px 16px; cursor: pointer;">Convert</button>
+</p>
+<p id="epoch-unit" style="color: #666; display: none;"></p>
+<table id="epoch-result" style="display: none; border-collapse: collapse;">
+    <tr><td style="padding: 4px 12px 4px 0; font-weight: bold;">UTC</td><td id="epoch-utc" style="font-family: monospace;"></td></tr>
+    <tr><td style="padding: 4px 12px 4px 0; font-weight: bold;">Local</td><td id="epoch-local" style="font-family: monospace;"></td></tr>
+</table>
+<p id="epoch-error" style="color: red; display: none;"></p>
+
+<h3>Human Date &rarr; Epoch</h3>
+<p>
+    <input id="date-input" type="text" style="font-family: monospace; font-size: 14px; padding: 6px; width: 260px;" placeholder="e.g. 2024-01-15 12:00:00">
+    <button id="date-btn" style="font-size: 14px; padding: 6px 16px; cursor: pointer;">Convert</button>
+</p>
+<p id="date-hint" style="color: #666; font-size: 13px;">Parsed as local time. Append "Z" or "+00:00" for UTC.</p>
+<p id="date-result" style="font-family: monospace; font-size: 18px; display: none;"></p>
+<p id="date-error" style="color: red; display: none;"></p>
+
+<script>
+    // Live epoch clock
+    var liveEl = document.getElementById('live-epoch');
+    function updateLive() {
+        liveEl.textContent = Math.floor(Date.now() / 1000);
+    }
+    updateLive();
+    setInterval(updateLive, 1000);
+
+    // Epoch -> Human
+    var epochInput = document.getElementById('epoch-input');
+    var epochBtn = document.getElementById('epoch-btn');
+    var epochUnit = document.getElementById('epoch-unit');
+    var epochResult = document.getElementById('epoch-result');
+    var epochUtc = document.getElementById('epoch-utc');
+    var epochLocal = document.getElementById('epoch-local');
+    var epochError = document.getElementById('epoch-error');
+
+    epochBtn.addEventListener('click', convertEpoch);
+    epochInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') convertEpoch();
+    });
+
+    function convertEpoch() {
+        epochUnit.style.display = 'none';
+        epochResult.style.display = 'none';
+        epochError.style.display = 'none';
+
+        var raw = epochInput.value.trim();
+        if (raw === '') return;
+
+        var num = Number(raw);
+        if (isNaN(num)) {
+            epochError.textContent = 'Not a valid number.';
+            epochError.style.display = 'block';
+            return;
+        }
+
+        var ms;
+        var digits = raw.replace(/^-/, '').length;
+        if (digits <= 10) {
+            ms = num * 1000;
+            epochUnit.textContent = 'Detected: seconds';
+        } else if (digits <= 13) {
+            ms = num;
+            epochUnit.textContent = 'Detected: milliseconds';
+        } else if (digits <= 16) {
+            ms = num / 1000;
+            epochUnit.textContent = 'Detected: microseconds';
+        } else {
+            ms = num / 1000000;
+            epochUnit.textContent = 'Detected: nanoseconds';
+        }
+
+        var d = new Date(ms);
+        if (isNaN(d.getTime())) {
+            epochError.textContent = 'Could not parse as a date.';
+            epochError.style.display = 'block';
+            return;
+        }
+
+        epochUtc.textContent = d.toUTCString();
+        epochLocal.textContent = d.toString();
+        epochUnit.style.display = 'block';
+        epochResult.style.display = 'table';
+    }
+
+    // Human -> Epoch
+    var dateInput = document.getElementById('date-input');
+    var dateBtn = document.getElementById('date-btn');
+    var dateResult = document.getElementById('date-result');
+    var dateError = document.getElementById('date-error');
+
+    dateBtn.addEventListener('click', convertDate);
+    dateInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') convertDate();
+    });
+
+    function convertDate() {
+        dateResult.style.display = 'none';
+        dateError.style.display = 'none';
+
+        var raw = dateInput.value.trim();
+        if (raw === '') return;
+
+        var d = new Date(raw);
+        if (isNaN(d.getTime())) {
+            dateError.textContent = 'Could not parse date string.';
+            dateError.style.display = 'block';
+            return;
+        }
+
+        dateResult.textContent = Math.floor(d.getTime() / 1000);
+        dateResult.style.display = 'block';
+    }
+</script>

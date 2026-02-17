@@ -1,0 +1,23 @@
+---
+title: word counter
+layout: simple
+page_id: trinkets
+---
+
+<p><a href='/trinkets'>&larr; Back to Trinkets</a></p>
+
+<textarea id="input" rows="12" style="width: 100%; font-family: monospace; font-size: 14px; padding: 8px; box-sizing: border-box;" placeholder="Start typing or paste text here..."></textarea>
+
+<p id="counts"><b>Words:</b> 0 &nbsp; <b>Characters:</b> 0 &nbsp; <b>Lines:</b> 0</p>
+
+<script>
+    var input = document.getElementById('input');
+    var counts = document.getElementById('counts');
+    input.addEventListener('input', function () {
+        var text = input.value;
+        var chars = text.length;
+        var words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        var lines = text === '' ? 0 : text.split(/\n/).length;
+        counts.innerHTML = '<b>Words:</b> ' + words + ' &nbsp; <b>Characters:</b> ' + chars + ' &nbsp; <b>Lines:</b> ' + lines;
+    });
+</script>
