@@ -13,5 +13,12 @@ page_id: about
 </p>
 
 <p>
-    I am currently on a mini-retirement since mid-2025. I made this page to share random side projects I'm working on out of personal interest, related to the built environment and AI. 
+    I am currently on a mini-retirement since mid-2025. I made this page to share random side projects I'm working on out of personal interest, related to the built environment and AI. Here is an AI froggy.
 </p>
+
+<div class='figure'>
+    <img src="/assets/frog.png"
+         style="width: 100%; height: 100%; display: block; margin: 0 auto;"/>
+</div>
+
+
