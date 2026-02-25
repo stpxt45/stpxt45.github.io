@@ -1,17 +1,28 @@
 ---
-title: someting different
+title: Parallel Plots for Early-Stage Energy-Efficient Building Design 
 layout: default
-date: 2025-11-13
-keywords: transformers
+date: 2026-02-24
+keywords: parallel plot
 published: true
 mathjax: yes
 ---
-afsdfgdfdgfgfgdgdfdg
-This post is a follow up to Part II on Encoders, you should start there if you are unfamiliar with encoders. 
+I first heard of parallel plot charts when I was working as a building enclosure consultant in 2019, when the head of our energy and sustainability department introduced me to this neat online tool called Building Pathfinder. We used it to inform clients on code energy requirements and what design options they could consider at a very high-level in the early stages, without the need to set up an energy model. I thought it was a neat and colourful graph, and it was interesting how one could edit what data you want to visualize and focus on instantaneously. Since then, I always thought of it as Building Pathfinder, or just Pathfinder. 
+Building Pathfinder was developed to give design teams a dynamic high-level understanding of how their design could perform in terms of energy efficiency (and a few years later, embodied carbon). With adjustable parameters like enclosure thermal performance, mechanical efficiencies, and various commonly used HVAC systems, the user could quickly get a clear ballpark idea of where their design stood in terms of performance. Or, looking at it the other way, one could see what design options are on or off the table if they wanted to meet a certain performance threshold but didn’t yet know their enclosure or mechanical system.
 
-Recall that the Transformer architecture consists of three parts: the Decoder, the Encoder, and Cross Attention. In parts I and II we studied the decoder only transformer and the encoder only transformer, respectively. Now it is time to combine these things together to form the original encoder-decoder transformer architecture, using the Cross Attention mechanism.
+You can find out more about the OG Building Pathfinder at this link: https://buildingpathfinder.com/
 
-Up to now, all mentions of "Attention" have referred to "Self Attention", where a token pays attention to other tokens in the same sequence. Cross Attention is a mechanism where a token pays attention to tokens in a different sequence. In particular, Cross Attention is used to connect the Encoder and the Decoder.
+Fast forward to my time working fulltime as an Energy and Climate Consultant in Toronto with a new group of smart people, one of the senior energy specialists in our department was also implementing our own type of “Building Pathfinder” but for a different set of building types and slightly different parameters, as well as a much wider swatch of locations in Canada and even the US, aside from just Vancouver and some select areas of BC. 
+
+Like with my previous company, the tool would be especially useful in the feasibility to schematic to design development phases when the client often hasn’t nailed down exactly their design direction but want to consider as much as possible in meeting their sustainability targets while the ability to make changes and make a meaningful impact is at its highest. 
+
+A typical energy model could take as little as a few hours for a house to weeks for larger buildings such as hospitals, labs, commercial buildings, even for early-stage design. As a consulting business, the ideal is to have a good balance between bringing insightful value to design decisions early on while also not having to charge such high fees from re-iterating on design changes so early, before the project has even been greenlit in some cases.
+
+To avoid further digression, let me get into what I made. 
+
+
+
+
+## What I’ve been working on
 
 <div class='figure'>
     <img src="/assets/Plot-full.png"
@@ -20,8 +31,6 @@ Up to now, all mentions of "Attention" have referred to "Self Attention", where 
         <span class='caption-label'>Figure 1.</span> I have changed the caption for a test. (Choi, 2024)
     </div>
 </div>
-
-## How Cross Attention connects the Encoder and the Decoder
 
 Something we should first clarify is how exactly the connection is made. The original diagram above is a bit confusing, but Murel and Noble (2024) provide a more clear explanation:
 <div class='figure'>
@@ -34,7 +43,7 @@ Something we should first clarify is how exactly the connection is made. The ori
 
 In words, once the encoder has processed the input sentence, the cross attention mechanism feeds the final encoding to each decoder block of the decoding stack.
 
-## The Cross Attention Mechanism in Detail
+## What I’m thinking of working on next
 
 The cross attention mechanism is nearly identical to the self attention mechanism, the main difference now is that in Cross Attention, we port the Key and Value matrices over from the Encoder and the decoder uses its own Query matrix on these encoder matrices. This is illustrated in the diagram below:
 
